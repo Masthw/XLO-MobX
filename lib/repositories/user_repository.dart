@@ -1,5 +1,6 @@
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'package:xlo_mobx/models/user.dart';
+import 'package:xlo_mobx/repositories/parse_errors.dart';
 import 'package:xlo_mobx/repositories/table_keys.dart';
 
 class UserRepository {
@@ -10,6 +11,12 @@ class UserRepository {
     parserUser.set<String>(keyUserPhone, user.phone);
     parserUser.set(keyUserType, user.type.index);
 
-    await parserUser.signUp();
+    final response = await parserUser.signUp();
+
+    if (response.success) {
+    } else {
+      final errorCode = response.error?.code ?? -1;
+      return Future.error(ParseErrors.getDescription(errorCode));
+    }
   }
 }
