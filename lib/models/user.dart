@@ -1,16 +1,26 @@
 enum UserType { PARTICULAR, PROFESSIONAL }
 
 class User {
-  User(
-      {required this.name,
-      required this.email,
-      required this.phone,
-      required this.password,
-      this.type = UserType.PARTICULAR});
+  User({
+    this.id,
+    required this.name,
+    required this.email,
+    required this.phone,
+    this.password,
+    this.type = UserType.PARTICULAR,
+    this.createdAt,
+  });
 
+  String? id;
   String name;
   String email;
   String phone;
-  String password;
+  String? password;
   UserType type;
+  DateTime? createdAt;
+
+  @override
+  String toString() {
+    return 'User{id: $id, name: $name, email: $email, phone: $phone, password: $password, type: $type, createdAt: $createdAt}';
+  }
 }

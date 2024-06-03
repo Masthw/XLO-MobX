@@ -148,6 +148,9 @@ abstract class _SignupStore with Store {
   @observable
   bool loading = false;
 
+  @observable
+  String? error;
+
   @action
   void _doNothing() {}
 
@@ -157,7 +160,12 @@ abstract class _SignupStore with Store {
 
     final user = User(name: name, email: email, phone: phone, password: pass1);
 
-    UserRepository().signUp(user);
+    try {
+      final resultUser = await UserRepository().signUp(user);
+      print(resultUser);
+    } catch (e) {
+      error = e.toString();
+    }
 
     loading = false;
   }

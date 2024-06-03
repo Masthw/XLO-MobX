@@ -2,6 +2,7 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:xlo_mobx/components/error_box.dart';
 import 'package:xlo_mobx/screens/signup/components/field_title.dart';
 import 'package:xlo_mobx/stores/signup_store.dart';
 
@@ -29,6 +30,12 @@ class SignUpScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Observer(builder: (_) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ErrorBox(message: signupStore.error),
+                    );
+                  }),
                   const FieldTitle(
                       title: 'Apelido',
                       subtitle: 'Como aparecerá em seus anúncios'),
@@ -132,14 +139,12 @@ class SignUpScreen extends StatelessWidget {
                       height: 40,
                       margin: const EdgeInsets.only(top: 20, bottom: 12),
                       child: ElevatedButton(
-                        onPressed:
-                            signupStore.loading || !signupStore.isFormValid
-                                ? null
-                                : signupStore.signUpPressed,
+                        onPressed: signupStore.signUpPressed,
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            disabledBackgroundColor:
-                                Colors.orange.withAlpha(120),
+                            backgroundColor:
+                                signupStore.isFormValid && !signupStore.loading
+                                    ? Colors.orange
+                                    : Colors.orange.withAlpha(120),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20))),
@@ -149,7 +154,7 @@ class SignUpScreen extends StatelessWidget {
                                     AlwaysStoppedAnimation(Colors.white),
                               )
                             : const Text(
-                                'CADASTRAR',
+                                'Cadastrar',
                                 style: TextStyle(color: Colors.white),
                               ),
                       ),
