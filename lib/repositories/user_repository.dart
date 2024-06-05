@@ -16,8 +16,18 @@ class UserRepository {
     if (response.success) {
       return mapParseToUser(response.result);
     } else {
-      final errorCode = response.error?.code ?? -1;
-      return Future.error(ParseErrors.getDescription(errorCode));
+      return Future.error(ParseErrors.getDescription(response.error!.code));
+    }
+  }
+
+  Future<User> loginWithEmail(String email, String password) async {
+    final parseUser = ParseUser(email, password, null);
+
+    final response = await parseUser.login();
+    if (response.success) {
+      return mapParseToUser(response.result);
+    } else {
+      return Future.error(ParseErrors.getDescription(response.error!.code));
     }
   }
 

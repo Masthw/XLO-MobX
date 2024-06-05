@@ -1,7 +1,10 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:xlo_mobx/helpers/extensions.dart';
+import 'package:xlo_mobx/repositories/user_repository.dart';
+import 'package:xlo_mobx/stores/user_manager_store.dart';
 part 'login_store.g.dart';
 
 class LoginStore = _LoginStoreBase with _$LoginStore;
@@ -58,6 +61,9 @@ abstract class _LoginStoreBase with Store {
   @observable
   bool loading = false;
 
+  @observable
+  String? error;
+
   @computed
   void Function() get loginPressed =>
       emailValid && passwordValid && !loading ? _login : _doNothing;
@@ -65,8 +71,13 @@ abstract class _LoginStoreBase with Store {
   @action
   Future<void> _login() async {
     loading = true;
+    try {
+      final user = await UserRepository().loginWithEmail(email, password);
+      GetIt.I<UserManagerStore>().setUser(user);
+    } catch (e) {
+      error = e.toString();
+    }
 
-    await Future.delayed(const Duration(seconds: 3));
     loading = false;
   }
 

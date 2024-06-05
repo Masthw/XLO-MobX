@@ -111,6 +111,22 @@ mixin _$LoginStore on _LoginStoreBase, Store {
     });
   }
 
+  late final _$errorAtom =
+      Atom(name: '_LoginStoreBase.error', context: context);
+
+  @override
+  String? get error {
+    _$errorAtom.reportRead();
+    return super.error;
+  }
+
+  @override
+  set error(String? value) {
+    _$errorAtom.reportWrite(value, super.error, () {
+      super.error = value;
+    });
+  }
+
   late final _$_loginAsyncAction =
       AsyncAction('_LoginStoreBase._login', context: context);
 
@@ -185,6 +201,7 @@ emailTouched: ${emailTouched},
 password: ${password},
 passwordTouched: ${passwordTouched},
 loading: ${loading},
+error: ${error},
 emailValid: ${emailValid},
 passwordValid: ${passwordValid},
 loginPressed: ${loginPressed}
