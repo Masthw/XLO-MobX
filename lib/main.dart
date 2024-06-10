@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeParse();
   setupLocators();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 void setupLocators() {
@@ -38,10 +38,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.purple,
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.purple,
-            titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
-            iconTheme: IconThemeData(color: Colors.white),
-          ),
+              backgroundColor: Colors.purple,
+              titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
+              iconTheme: IconThemeData(color: Colors.white),
+              elevation: 0),
           textSelectionTheme:
               const TextSelectionThemeData(cursorColor: Colors.orange),
           visualDensity: VisualDensity.adaptivePlatformDensity,
