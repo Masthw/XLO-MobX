@@ -27,7 +27,6 @@ class CategoryScreen extends StatelessWidget {
             ),
             elevation: 8,
             child: Observer(builder: (_) {
-              print('Observando mudanças na categoryStore');
               if (categoryStore.error != null) {
                 return ErrorBox(
                   message: categoryStore.error,
@@ -42,6 +41,13 @@ class CategoryScreen extends StatelessWidget {
                     : categoryStore.categoryList;
 
                 return ListView.separated(
+                    itemCount: categories.length,
+                    separatorBuilder: (_, __) {
+                      return const Divider(
+                        height: 0.1,
+                        color: Colors.grey,
+                      );
+                    },
                     itemBuilder: (_, index) {
                       final category = categories[index];
                       return InkWell(
@@ -65,14 +71,7 @@ class CategoryScreen extends StatelessWidget {
                           ),
                         ),
                       );
-                    },
-                    separatorBuilder: (_, __) {
-                      return const Divider(
-                        height: 0.1,
-                        color: Colors.grey,
-                      );
-                    },
-                    itemCount: categories.length);
+                    });
               }
             })),
       ),

@@ -25,10 +25,45 @@ mixin _$CreateStore on _CreateStoreBase, Store {
     });
   }
 
+  late final _$categoryAtom =
+      Atom(name: '_CreateStoreBase.category', context: context);
+
+  @override
+  Category get category {
+    _$categoryAtom.reportRead();
+    return super.category;
+  }
+
+  bool _categoryIsInitialized = false;
+
+  @override
+  set category(Category value) {
+    _$categoryAtom
+        .reportWrite(value, _categoryIsInitialized ? super.category : null, () {
+      super.category = value;
+      _categoryIsInitialized = true;
+    });
+  }
+
+  late final _$_CreateStoreBaseActionController =
+      ActionController(name: '_CreateStoreBase', context: context);
+
+  @override
+  void setCategory(Category value) {
+    final _$actionInfo = _$_CreateStoreBaseActionController.startAction(
+        name: '_CreateStoreBase.setCategory');
+    try {
+      return super.setCategory(value);
+    } finally {
+      _$_CreateStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
-images: ${images}
+images: ${images},
+category: ${category}
     ''';
   }
 }
