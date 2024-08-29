@@ -29,19 +29,15 @@ mixin _$CreateStore on _CreateStoreBase, Store {
       Atom(name: '_CreateStoreBase.category', context: context);
 
   @override
-  Category get category {
+  Category? get category {
     _$categoryAtom.reportRead();
     return super.category;
   }
 
-  bool _categoryIsInitialized = false;
-
   @override
-  set category(Category value) {
-    _$categoryAtom
-        .reportWrite(value, _categoryIsInitialized ? super.category : null, () {
+  set category(Category? value) {
+    _$categoryAtom.reportWrite(value, super.category, () {
       super.category = value;
-      _categoryIsInitialized = true;
     });
   }
 

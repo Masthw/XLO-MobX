@@ -32,7 +32,7 @@ class CategoryField extends StatelessWidget {
         subtitle: createStore.category == null
             ? null
             : Text(
-                createStore.category.description,
+                createStore.category!.description,
                 style: const TextStyle(color: Colors.black, fontSize: 17),
               ),
         trailing: const Icon(Icons.keyboard_arrow_down),
