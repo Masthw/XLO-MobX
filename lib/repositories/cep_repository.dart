@@ -5,7 +5,7 @@ import 'package:xlo_mobx/repositories/ibge_repository.dart';
 
 class CepRepository {
   Future<Address> getAddressFromApi(String cep) async {
-    if (cep == null || cep.isEmpty) return Future.error("CEP Inválido");
+    if (cep.isEmpty) return Future.error("CEP Inválido");
 
     final clearCep = cep.replaceAll(RegExp('[^0-9]'), '');
     if (clearCep.length != 8) return Future.error('CEP Inválido');
