@@ -2,152 +2,182 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
+import 'package:mobx/mobx.dart';
 import 'package:xlo_mobx/components/custom_drawer/custom_drawer.dart';
 import 'package:xlo_mobx/components/error_box.dart';
-import 'package:xlo_mobx/screens/create/components/category_field.dart';
-import 'package:xlo_mobx/screens/create/components/cep_field.dart';
-import 'package:xlo_mobx/screens/create/components/hide_phone_field.dart';
-import 'package:xlo_mobx/screens/create/components/images_field.dart';
+import 'package:xlo_mobx/components/replace_raisedbutton.dart';
+import 'package:xlo_mobx/models/ad.dart';
+import 'package:xlo_mobx/screens/myads/myads_screen.dart';
 import 'package:xlo_mobx/stores/create_store.dart';
+import 'package:xlo_mobx/stores/page_store.dart';
 
-class CreateScreen extends StatelessWidget {
-  CreateScreen({super.key});
+import 'components/category_field.dart';
+import 'components/cep_field.dart';
+import 'components/hide_phone_field.dart';
+import 'components/images_field.dart';
 
-  final CreateStore createStore = CreateStore();
+class CreateScreen extends StatefulWidget {
+  CreateScreen({this.ad});
+
+  final Ad ad;
+
+  @override
+  _CreateScreenState createState() => _CreateScreenState(ad);
+}
+
+class _CreateScreenState extends State<CreateScreen> {
+  _CreateScreenState(Ad ad)
+      : editing = ad != null,
+        createStore = CreateStore(ad ?? Ad());
+
+  final CreateStore createStore;
+
+  bool editing;
+
+  @override
+  void initState() {
+    super.initState();
+
+    when((_) => createStore.savedAd, () {
+      if (editing)
+        Navigator.of(context).pop(true);
+      else {
+        GetIt.I<PageStore>().setPage(0);
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => MyAdsScreen(initialPage: 1),
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    const labelStyle = TextStyle(
+    final labelStyle = TextStyle(
       fontWeight: FontWeight.w800,
       color: Colors.grey,
       fontSize: 18,
     );
 
-    const contentPadding = EdgeInsets.fromLTRB(16, 10, 12, 10);
+    final contentPadding = const EdgeInsets.fromLTRB(16, 10, 12, 10);
 
     return Scaffold(
-      drawer: const CustomDrawer(),
+      drawer: editing ? null : CustomDrawer(),
       appBar: AppBar(
-        title: const Text('Criar Anúncio'),
+        title: Text(editing ? 'Editar Anúncio' : 'Criar Anúncio'),
         centerTitle: true,
       ),
       body: Container(
         alignment: Alignment.center,
         child: SingleChildScrollView(
           child: Card(
-              clipBehavior: Clip.antiAlias,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
-              margin: const EdgeInsets.symmetric(horizontal: 32),
-              elevation: 8,
-              child: Observer(builder: (_) {
-                if (createStore.loading) {
-                  return const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Salvando Anúncio',
-                          style: TextStyle(fontSize: 18, color: Colors.purple),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation(Colors.purple),
-                        )
-                      ],
-                    ),
-                  );
-                } else {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
+            clipBehavior: Clip.antiAlias,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 8,
+            child: Observer(builder: (_) {
+              if (createStore.loading)
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
                     children: [
-                      ImagesField(
-                        createStore: createStore,
+                      Text(
+                        'Salvando Anúncio',
+                        style: TextStyle(fontSize: 18, color: Colors.purple),
                       ),
-                      Observer(
-                        builder: (_) {
-                          return TextFormField(
-                            onChanged: createStore.setTitle,
-                            decoration: InputDecoration(
-                                labelText: 'Título *',
-                                labelStyle: labelStyle,
-                                contentPadding: contentPadding,
-                                errorText: createStore.titleError),
-                          );
-                        },
+                      const SizedBox(
+                        height: 16,
                       ),
-                      Observer(
-                        builder: (_) {
-                          return TextFormField(
-                            onChanged: createStore.setDescription,
-                            decoration: InputDecoration(
-                              labelText: 'Descrição *',
-                              labelStyle: labelStyle,
-                              contentPadding: contentPadding,
-                              errorText: createStore.descriptionError,
-                            ),
-                            maxLines: null,
-                          );
-                        },
-                      ),
-                      CategoryField(createStore),
-                      CepField(createStore),
-                      Observer(builder: (_) {
-                        return TextFormField(
-                          onChanged: createStore.setPrice,
-                          decoration: InputDecoration(
-                            labelText: 'Preço *',
-                            labelStyle: labelStyle,
-                            contentPadding: contentPadding,
-                            errorText: createStore.priceError,
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            RealInputFormatter(moeda: true),
-                          ],
-                        );
-                      }),
-                      HidePhoneField(createStore),
-                      Observer(
-                        builder: (_) {
-                          return ErrorBox(
-                            message: createStore.error,
-                          );
-                        },
-                      ),
-                      Observer(builder: (_) {
-                        return SizedBox(
-                          height: 50,
-                          child: GestureDetector(
-                            onTap: createStore.invalidSendPressed,
-                            child: ElevatedButton(
-                              onPressed: createStore.sendPressed,
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.orange,
-                                  disabledBackgroundColor:
-                                      Colors.orange.withAlpha(120),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  shape: const LinearBorder()),
-                              child: const Text(
-                                'Enviar',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      })
+                      CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.purple),
+                      )
                     ],
-                  );
-                }
-              })),
+                  ),
+                );
+              else
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ImagesField(createStore),
+                    Observer(builder: (_) {
+                      return TextFormField(
+                        initialValue: createStore.title,
+                        onChanged: createStore.setTitle,
+                        decoration: InputDecoration(
+                          labelText: 'Título *',
+                          labelStyle: labelStyle,
+                          contentPadding: contentPadding,
+                          errorText: createStore.titleError,
+                        ),
+                      );
+                    }),
+                    Observer(builder: (_) {
+                      return TextFormField(
+                        initialValue: createStore.description,
+                        onChanged: createStore.setDescription,
+                        decoration: InputDecoration(
+                          labelText: 'Descrição *',
+                          labelStyle: labelStyle,
+                          contentPadding: contentPadding,
+                          errorText: createStore.descriptionError,
+                        ),
+                        maxLines: null,
+                      );
+                    }),
+                    CategoryField(createStore),
+                    CepField(createStore),
+                    Observer(builder: (_) {
+                      return TextFormField(
+                        initialValue: createStore.priceText,
+                        onChanged: createStore.setPrice,
+                        decoration: InputDecoration(
+                          labelText: 'Preço *',
+                          labelStyle: labelStyle,
+                          contentPadding: contentPadding,
+                          prefixText: 'R\$ ',
+                          errorText: createStore.priceError,
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          RealInputFormatter(centavos: true),
+                        ],
+                      );
+                    }),
+                    HidePhoneField(createStore),
+                    Observer(builder: (_) {
+                      return ErrorBox(
+                        message: createStore.error,
+                      );
+                    }),
+                    Observer(builder: (_) {
+                      return SizedBox(
+                        height: 50,
+                        child: GestureDetector(
+                          onTap: createStore.invalidSendPressed,
+                          child: ReplaceRaisedButton(
+                            child: Text(
+                              'Enviar',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            textColor: Colors.white,
+                            color: Colors.orange,
+                            disabledColor: Colors.orange.withAlpha(120),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            onPressed: createStore.sendPressed,
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                );
+            }),
+          ),
         ),
       ),
     );

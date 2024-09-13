@@ -1,41 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
-import 'package:xlo_mobx/repositories/category_repository.dart';
-import 'package:xlo_mobx/repositories/cep_repository.dart';
-import 'package:xlo_mobx/repositories/ibge_repository.dart';
-import 'package:xlo_mobx/screens/base/base_screen.dart';
-import 'package:xlo_mobx/screens/category/category_screen.dart';
-import 'package:xlo_mobx/stores/category_store.dart';
-import 'package:xlo_mobx/stores/page_store.dart';
-import 'package:xlo_mobx/stores/user_manager_store.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+
+import 'screens/base/base_screen.dart';
+import 'stores/category_store.dart';
+import 'stores/chat_room_store.dart';
+import 'stores/connectivity_store.dart';
+import 'stores/favorite_store.dart';
+import 'stores/home_store.dart';
+import 'stores/location_store.dart';
+import 'stores/page_store.dart';
+import 'stores/user_manager_store.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeParse();
+  await configOneSignal();
   setupLocators();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 void setupLocators() {
+  GetIt.I.registerSingleton(ConnectivityStore());
   GetIt.I.registerSingleton(PageStore());
+  GetIt.I.registerSingleton(LocationStore());
   GetIt.I.registerSingleton(UserManagerStore());
+  GetIt.I.registerSingleton(HomeStore());
   GetIt.I.registerSingleton(CategoryStore());
+  GetIt.I.registerSingleton(FavoriteStore());
+  GetIt.I.registerSingleton(ChatRoomStore());
+}
+
+Future<void> configOneSignal() async {
+  OneSignal.shared.setLogLevel(OSLogLevel.none, OSLogLevel.none);
+  OneSignal.shared.setLocationShared(false);
+
+  //CONFIGURA O ONESIGNAL DE ACORDO COM A CHAVE CRIADA NO ONESIGNAL
+  OneSignal.shared.setAppId('1e6872fc-edd8-47b6-a894-97bc55ae423e');
 }
 
 Future<void> initializeParse() async {
-  await Parse().initialize(
-    'C5ynrpFBlGbkfMxp0d0JFlNxSSXG7bBHSGcy2jqL',
-    'https://parseapi.back4app.com/',
-    clientKey: '5wJXmbkPxPYssgO2p5NnjM7JFaaHA0RDhmBSWgqf',
-    autoSendSessionId: true,
-    debug: true,
-  );
+  const appId = '8MmuFHBcTejklfFhxsvS03gy0XIijosSQp6l5Da8';
+  const clientKey = 'Jbohcr47krRtH2YnPuusp5xLHvXYH7GNMSmcuRnA';
+  const serverURL = 'https://parseapi.back4app.com/';
+  const serverLiveQueryURL = 'https://xlo-mobx.b4a.io';
+
+  await Parse().initialize(appId, serverURL,
+      clientKey: clientKey,
+      autoSendSessionId: true,
+      debug: true,
+      liveQueryUrl: serverLiveQueryURL);
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,15 +62,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor: Colors.purple,
-          appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.purple,
-              titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
-              iconTheme: IconThemeData(color: Colors.white),
-              elevation: 0),
-          textSelectionTheme:
-              const TextSelectionThemeData(cursorColor: Colors.orange),
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          scaffoldBackgroundColor: Colors.purple),
+          scaffoldBackgroundColor: Colors.purple,
+          appBarTheme: AppBarTheme(elevation: 0),
+          textSelectionTheme:
+              TextSelectionThemeData(cursorColor: Colors.orange)),
+      supportedLocales: const [
+        Locale('pt', 'BR'),
+      ],
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
       home: BaseScreen(),
     );
   }

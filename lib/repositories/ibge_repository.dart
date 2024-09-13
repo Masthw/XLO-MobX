@@ -10,46 +10,42 @@ class IBGERepository {
     final preferences = await SharedPreferences.getInstance();
 
     if (preferences.containsKey('UF_LIST')) {
-      final jsonString = preferences.getString('UF_LIST');
+      final j = json.decode(preferences.get('UF_LIST'));
 
-      if (jsonString != null) {
-        final j = json.decode(jsonString);
-
-        return (j as List).map<UF>((item) => UF.fromJson(item)).toList()
-          ..sort((UF a, UF b) =>
-              a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-      }
+      return j.map<UF>((j) => UF.fromJson(j)).toList()
+        ..sort((UF a, UF b) =>
+            a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     }
 
     const endpoint =
-        'https://servicodados.ibge.gov.br/api/v1/localidades/distritos';
+        'https://servicodados.ibge.gov.br/api/v1/localidades/estados';
 
     try {
       final response = await Dio().get<List>(endpoint);
 
       preferences.setString('UF_LIST', json.encode(response.data));
 
-      return response.data!.map<UF>((j) => UF.fromJson(j)).toList()
+      return response.data.map<UF>((j) => UF.fromJson(j)).toList()
         ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-    } on DioException {
-      return Future.error("Falha ao obter lista de Estados");
+    } on DioError catch (e) {
+      print(e.toString());
+      return Future.error('Falha ao obter lista de Estados');
     }
   }
 
-  Future<List<City>> getCityListFromApi(UF uf) async {
+  Future<List<City>> getCityList(UF uf) async {
     final String endpoint =
         'https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf.id}/municipios';
 
     try {
       final response = await Dio().get<List>(endpoint);
-      final cityList = response.data!
-          .map<City>((j) => City.fromJson(j))
-          .toList()
-        ..sort(
-            (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+
+      final cityList = response.data.map<City>((j) => City.fromJson(j)).toList()
+        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
       return cityList;
-    } on DioException {
+    } on DioError catch (e) {
+      print(e.toString());
       return Future.error('Falha ao obter lista de Cidades');
     }
   }

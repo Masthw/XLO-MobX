@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PageTile extends StatelessWidget {
-  PageTile(
-      {super.key,
-      required this.label,
-      required this.iconData,
-      required this.onTap,
-      required this.highlighted});
+
+  PageTile({this.label, this.iconData, this.onTap, this.highlighted});
 
   final String label;
   final IconData iconData;
@@ -19,14 +15,16 @@ class PageTile extends StatelessWidget {
       title: Text(
         label,
         style: TextStyle(
-            fontWeight: FontWeight.w700,
-            color: highlighted ? Colors.purple : Colors.black54),
+          fontWeight: FontWeight.w700,
+          color: highlighted ? Colors.purple: Colors.black54
+        ),
       ),
       leading: Icon(
         iconData,
-        color: highlighted ? Colors.purple : Colors.black54,
+        color: highlighted ? Colors.purple: Colors.black54,
       ),
       onTap: onTap,
     );
   }
+
 }

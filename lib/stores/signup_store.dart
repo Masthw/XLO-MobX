@@ -1,142 +1,96 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:xlo_mobx/helpers/extensions.dart';
 import 'package:xlo_mobx/models/user.dart';
 import 'package:xlo_mobx/repositories/user_repository.dart';
 import 'package:xlo_mobx/stores/user_manager_store.dart';
+
 part 'signup_store.g.dart';
 
 class SignupStore = _SignupStore with _$SignupStore;
 
 abstract class _SignupStore with Store {
   @observable
-  String name = '';
-
-  @observable
-  bool nameTouched = false;
+  String name;
 
   @action
   void setName(String value) => name = value;
 
-  @action
-  void setNameTouched(bool value) => nameTouched = value;
-
   @computed
   bool get nameValid => name != null && name.length > 6;
-  String? get nameError {
-    if (!nameTouched) {
+  String get nameError {
+    if (name == null || nameValid)
       return null;
-    } else if (name.isEmpty) {
+    else if (name.isEmpty)
       return 'Campo obrigatório';
-    } else if (name.length < 6) {
+    else
       return 'Nome muito curto';
-    } else {
-      return null;
-    }
   }
 
   @observable
-  String email = '';
-
-  @observable
-  bool emailTouched = false;
+  String email;
 
   @action
   void setEmail(String value) => email = value;
 
-  @action
-  void setEmailTouched(bool value) => emailTouched = value;
-
   @computed
   bool get emailValid => email != null && email.isEmailValid();
-  String? get emailError {
-    if (!emailTouched) {
+  String get emailError {
+    if (email == null || emailValid)
       return null;
-    } else if (email.isEmpty) {
+    else if (email.isEmpty)
       return 'Campo obrigatório';
-    } else if (!emailValid) {
+    else
       return 'E-mail inválido';
-    } else {
-      return null;
-    }
   }
 
   @observable
-  String phone = '';
-
-  @observable
-  bool phoneTouched = false;
+  String phone;
 
   @action
   void setPhone(String value) => phone = value;
 
-  @action
-  void setPhoneTouched(bool value) => phoneTouched = value;
-
   @computed
   bool get phoneValid => phone != null && phone.length >= 14;
-  String? get phoneError {
-    if (!phoneTouched) {
+  String get phoneError {
+    if (phone == null || phoneValid)
       return null;
-    } else if (phone.isEmpty) {
+    else if (phone.isEmpty)
       return 'Campo obrigatório';
-    } else if (!phoneValid) {
+    else
       return 'Celular inválido';
-    } else {
-      return null;
-    }
   }
 
   @observable
-  String pass1 = '';
-
-  @observable
-  bool pass1Touched = false;
+  String pass1;
 
   @action
   void setPass1(String value) => pass1 = value;
 
-  @action
-  void setPass1Touched(bool value) => pass1Touched = value;
-
   @computed
   bool get pass1Valid => pass1 != null && pass1.length >= 6;
-  String? get pass1Error {
-    if (!pass1Touched) {
+  String get pass1Error {
+    if (pass1 == null || pass1Valid)
       return null;
-    } else if (pass1.isEmpty) {
+    else if (pass1.isEmpty)
       return 'Campo obrigatório';
-    } else if (!pass1Valid) {
+    else
       return 'Senha muito curta';
-    } else {
-      return null;
-    }
   }
 
   @observable
-  String pass2 = '';
-
-  @observable
-  bool pass2Touched = false;
+  String pass2;
 
   @action
   void setPass2(String value) => pass2 = value;
 
-  @action
-  void setPass2Touched(bool value) => pass2Touched = value;
-
   @computed
-  bool get pass2Valid => pass1 != null && pass2 == pass1;
-  String? get pass2Error {
-    if (!pass2Touched) {
+  bool get pass2Valid => pass2 != null && pass2 == pass1;
+  String get pass2Error {
+    if (pass2 == null || pass2Valid)
       return null;
-    } else if (!pass2Valid || pass2.isEmpty) {
+    else
       return 'Senhas não coincidem';
-    } else {
-      return null;
-    }
   }
 
   @computed
@@ -144,17 +98,16 @@ abstract class _SignupStore with Store {
       nameValid && emailValid && phoneValid && pass1Valid && pass2Valid;
 
   @computed
-  void Function() get signUpPressed =>
-      (isFormValid && !loading) ? _signUp : _doNothing;
+  Function get signUpPressed => (isFormValid && !loading) ? _signUp : null;
 
   @observable
   bool loading = false;
 
   @observable
-  String? error;
+  String error;
 
   @action
-  void _doNothing() {}
+  setError(String value) => error = value;
 
   @action
   Future<void> _signUp() async {
@@ -166,7 +119,7 @@ abstract class _SignupStore with Store {
       final resultUser = await UserRepository().signUp(user);
       GetIt.I<UserManagerStore>().setUser(resultUser);
     } catch (e) {
-      error = e.toString();
+      setError(e);
     }
 
     loading = false;

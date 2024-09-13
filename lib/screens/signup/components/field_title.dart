@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FieldTitle extends StatelessWidget {
-  const FieldTitle({super.key, required this.title, required this.subtitle});
+
+  FieldTitle({this.title, this.subtitle});
 
   final String title;
   final String subtitle;
@@ -22,8 +23,8 @@ class FieldTitle extends StatelessWidget {
             ),
           ),
           Text(
-            subtitle,
-            style: const TextStyle(
+            '$subtitle',
+            style: TextStyle(
               color: Colors.grey,
               fontSize: 12,
             ),

@@ -7,7 +7,7 @@ part 'cep_store.g.dart';
 class CepStore = _CepStore with _$CepStore;
 
 abstract class _CepStore with Store {
-  _CepStore() {
+  _CepStore(String initialCep) {
     autorun((_) {
       if (clearCep.length != 8) {
         _reset();
@@ -15,6 +15,8 @@ abstract class _CepStore with Store {
         _searchCep();
       }
     });
+
+    setCep(initialCep);
   }
 
   @observable
@@ -27,20 +29,22 @@ abstract class _CepStore with Store {
   String get clearCep => cep.replaceAll(RegExp('[^0-9]'), '');
 
   @observable
-  Address? address;
+  Address address;
 
   @observable
-  String? error;
+  String error;
 
   @observable
   bool loading = false;
 
+  @action
   Future<void> _searchCep() async {
     loading = true;
     try {
       address = await CepRepository().getAddressFromApi(clearCep);
+      error = null;
     } catch (e) {
-      error = e as String?;
+      error = e;
       address = null;
     }
     loading = false;

@@ -1,14 +1,22 @@
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:xlo_mobx/models/category.dart';
 import 'package:xlo_mobx/repositories/category_repository.dart';
+
+import 'connectivity_store.dart';
+
 part 'category_store.g.dart';
 
-class CategoryStore = _CategoryStoreBase with _$CategoryStore;
+class CategoryStore = _CategoryStore with _$CategoryStore;
 
-abstract class _CategoryStoreBase with Store {
+abstract class _CategoryStore with Store {
+  final ConnectivityStore connectivityStore = GetIt.I<ConnectivityStore>();
+
   _CategoryStore() {
-    print('Inicializando CategoryStore');
-    _loadCategories();
+    autorun((_) {
+      if (connectivityStore.connected && categoryList.isEmpty)
+        _loadCategories();
+    });
   }
 
   ObservableList<Category> categoryList = ObservableList<Category>();
@@ -21,25 +29,19 @@ abstract class _CategoryStoreBase with Store {
   void setCategories(List<Category> categories) {
     categoryList.clear();
     categoryList.addAll(categories);
-    print('Categorias configuradas: $categoryList');
   }
 
   @observable
-  String? error;
+  String error;
 
   @action
-  void setError(String value) {
-    error = value;
-    print('Erro configurado: $error');
-  }
+  void setError(String value) => error = value;
 
   Future<void> _loadCategories() async {
     try {
       final categories = await CategoryRepository().getList();
-      print('Categorias carregadas: $categories');
       setCategories(categories);
     } catch (e) {
-      print('Erro ao carregar categorias: $e');
       setError(e.toString());
     }
   }

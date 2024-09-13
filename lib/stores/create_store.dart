@@ -1,6 +1,3 @@
-// ignore_for_file: unused_local_variable
-
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:xlo_mobx/models/ad.dart';
@@ -9,23 +6,37 @@ import 'package:xlo_mobx/models/category.dart';
 import 'package:xlo_mobx/repositories/ad_repository.dart';
 import 'package:xlo_mobx/stores/cep_store.dart';
 import 'package:xlo_mobx/stores/user_manager_store.dart';
+
 part 'create_store.g.dart';
 
-// ignore: library_private_types_in_public_api
-class CreateStore = _CreateStoreBase with _$CreateStore;
+class CreateStore = _CreateStore with _$CreateStore;
 
-abstract class _CreateStoreBase with Store {
-  @observable
+abstract class _CreateStore with Store {
+  _CreateStore(this.ad) {
+    title = ad.title ?? '';
+    description = ad.description ?? '';
+    images = ad.images.asObservable();
+    category = ad.category;
+    priceText = ad.price?.toStringAsFixed(2) ?? '';
+    hidePhone = ad.hidePhone;
+
+    if (ad.address != null)
+      cepStore = CepStore(ad.address.cep);
+    else
+      cepStore = CepStore(null);
+  }
+
+  final Ad ad;
+
   ObservableList images = ObservableList();
 
   @computed
   bool get imagesValid => images.isNotEmpty;
-  String? get imagesError {
-    if (!showErrors || imagesValid) {
+  String get imagesError {
+    if (!showErrors || imagesValid)
       return null;
-    } else {
+    else
       return 'Insira imagens';
-    }
   }
 
   @observable
@@ -36,14 +47,13 @@ abstract class _CreateStoreBase with Store {
 
   @computed
   bool get titleValid => title.length >= 6;
-  String? get titleError {
-    if (!showErrors || titleValid) {
+  String get titleError {
+    if (!showErrors || titleValid)
       return null;
-    } else if (title.isEmpty) {
+    else if (title.isEmpty)
       return 'Campo obrigatório';
-    } else {
+    else
       return 'Título muito curto';
-    }
   }
 
   @observable
@@ -54,43 +64,40 @@ abstract class _CreateStoreBase with Store {
 
   @computed
   bool get descriptionValid => description.length >= 10;
-  String? get descriptionError {
-    if (!showErrors || descriptionValid) {
+  String get descriptionError {
+    if (!showErrors || descriptionValid)
       return null;
-    } else if (description.isEmpty) {
+    else if (description.isEmpty)
       return 'Campo obrigatório';
-    } else {
+    else
       return 'Descrição muito curta';
-    }
   }
 
   @observable
-  Category? category;
+  Category category;
 
   @action
   void setCategory(Category value) => category = value;
 
   @computed
   bool get categoryValid => category != null;
-  String? get categoryError {
-    if (!showErrors || categoryValid) {
+  String get categoryError {
+    if (!showErrors || categoryValid)
       return null;
-    } else {
+    else
       return 'Campo obrigatório';
-    }
   }
 
-  CepStore cepStore = CepStore();
+  CepStore cepStore;
 
   @computed
-  Address? get address => cepStore.address;
+  Address get address => cepStore.address;
   bool get addressValid => address != null;
-  String? get addressError {
-    if (!showErrors || addressValid) {
+  String get addressError {
+    if (!showErrors || addressValid)
       return null;
-    } else {
+    else
       return 'Campo obrigatório';
-    }
   }
 
   @observable
@@ -100,34 +107,29 @@ abstract class _CreateStoreBase with Store {
   void setPrice(String value) => priceText = value;
 
   @computed
-  num? get price {
+  num get price {
     if (priceText.contains(',')) {
-      return num.tryParse(priceText.replaceAll(RegExp('[^0-9]'), ''))! / 100;
+      return num.tryParse(priceText.replaceAll(RegExp('[^0-9]'), '')) / 100;
     } else {
       return num.tryParse(priceText);
     }
   }
 
-  bool get priceValid => price != null && price! <= 9999999;
-  String? get priceError {
-    if (!showErrors || priceValid) {
+  bool get priceValid => price != null && price <= 9999999;
+  String get priceError {
+    if (!showErrors || priceValid)
       return null;
-    } else if (priceText.isEmpty) {
+    else if (priceText.isEmpty)
       return 'Campo obrigatório';
-    } else {
+    else
       return 'Preço inválido';
-    }
   }
 
   @observable
   bool hidePhone = false;
 
   @action
-  void setHidePhone(bool? value) {
-    if (value != null) {
-      hidePhone = value;
-    }
-  }
+  void setHidePhone(bool value) => hidePhone = value;
 
   @computed
   bool get formValid =>
@@ -139,7 +141,7 @@ abstract class _CreateStoreBase with Store {
       priceValid;
 
   @computed
-  VoidCallback? get sendPressed => formValid ? _send : null;
+  Function get sendPressed => formValid ? _send : null;
 
   @observable
   bool showErrors = false;
@@ -151,25 +153,28 @@ abstract class _CreateStoreBase with Store {
   bool loading = false;
 
   @observable
-  String? error;
+  String error;
+
+  @observable
+  bool savedAd = false;
 
   @action
   Future<void> _send() async {
-    final ad = Ad();
     ad.title = title;
     ad.description = description;
-    ad.category = category!;
-    ad.price = price!;
+    ad.category = category;
+    ad.price = price;
     ad.hidePhone = hidePhone;
     ad.images = images;
-    ad.address = address!;
-    ad.user = GetIt.I<UserManagerStore>().user!;
+    ad.address = address;
+    ad.user = GetIt.I<UserManagerStore>().user;
 
     loading = true;
     try {
-      final response = await AdRepository().save(ad);
+      await AdRepository().save(ad);
+      savedAd = true;
     } catch (e) {
-      error = e.toString();
+      error = e;
     }
     loading = false;
   }

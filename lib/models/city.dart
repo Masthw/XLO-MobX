@@ -6,11 +6,16 @@ class City {
         name: json['nome'],
       );
 
-  int? id;
-  String? name;
+  int id;
+  String name;
 
   @override
   String toString() {
     return 'City{id: $id, name: $name}';
   }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "nome": name,
+      };
 }

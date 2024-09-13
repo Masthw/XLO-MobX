@@ -4,7 +4,7 @@ import 'package:xlo_mobx/screens/category/category_screen.dart';
 import 'package:xlo_mobx/stores/create_store.dart';
 
 class CategoryField extends StatelessWidget {
-  const CategoryField(this.createStore, {super.key});
+  CategoryField(this.createStore);
 
   final CreateStore createStore;
 
@@ -15,7 +15,7 @@ class CategoryField extends StatelessWidget {
         children: [
           ListTile(
             title: createStore.category == null
-                ? const Text(
+                ? Text(
                     'Categoria *',
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
@@ -23,10 +23,10 @@ class CategoryField extends StatelessWidget {
                       fontSize: 18,
                     ),
                   )
-                : const Text(
+                : Text(
                     'Categoria *',
                     style: TextStyle(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       color: Colors.grey,
                       fontSize: 14,
                     ),
@@ -34,10 +34,10 @@ class CategoryField extends StatelessWidget {
             subtitle: createStore.category == null
                 ? null
                 : Text(
-                    createStore.category!.description,
-                    style: const TextStyle(color: Colors.black, fontSize: 17),
+                    '${createStore.category.description}',
+                    style: TextStyle(color: Colors.black, fontSize: 17),
                   ),
-            trailing: const Icon(Icons.keyboard_arrow_down),
+            trailing: Icon(Icons.keyboard_arrow_down),
             onTap: () async {
               final category = await showDialog(
                 context: context,
@@ -54,14 +54,13 @@ class CategoryField extends StatelessWidget {
           if (createStore.categoryError != null)
             Container(
               alignment: Alignment.centerLeft,
-              decoration: const BoxDecoration(
-                  border: Border(
-                top: BorderSide(color: Colors.red),
-              )),
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: Colors.red)),
+              ),
               padding: const EdgeInsets.fromLTRB(16, 8, 0, 0),
               child: Text(
-                createStore.categoryError!,
-                style: const TextStyle(
+                createStore.categoryError,
+                style: TextStyle(
                   color: Colors.red,
                   fontSize: 12,
                 ),
@@ -71,7 +70,7 @@ class CategoryField extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.grey[500]!),
+                  top: BorderSide(color: Colors.grey[500]),
                 ),
               ),
             )

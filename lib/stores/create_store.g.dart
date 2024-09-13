@@ -6,83 +6,64 @@ part of 'create_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$CreateStore on _CreateStoreBase, Store {
-  Computed<bool>? _$imagesValidComputed;
+mixin _$CreateStore on _CreateStore, Store {
+  Computed<bool> _$imagesValidComputed;
 
   @override
   bool get imagesValid =>
       (_$imagesValidComputed ??= Computed<bool>(() => super.imagesValid,
-              name: '_CreateStoreBase.imagesValid'))
+              name: '_CreateStore.imagesValid'))
           .value;
-  Computed<bool>? _$titleValidComputed;
+  Computed<bool> _$titleValidComputed;
 
   @override
   bool get titleValid =>
       (_$titleValidComputed ??= Computed<bool>(() => super.titleValid,
-              name: '_CreateStoreBase.titleValid'))
+              name: '_CreateStore.titleValid'))
           .value;
-  Computed<bool>? _$descriptionValidComputed;
+  Computed<bool> _$descriptionValidComputed;
 
   @override
   bool get descriptionValid => (_$descriptionValidComputed ??= Computed<bool>(
           () => super.descriptionValid,
-          name: '_CreateStoreBase.descriptionValid'))
+          name: '_CreateStore.descriptionValid'))
       .value;
-  Computed<bool>? _$categoryValidComputed;
+  Computed<bool> _$categoryValidComputed;
 
   @override
   bool get categoryValid =>
       (_$categoryValidComputed ??= Computed<bool>(() => super.categoryValid,
-              name: '_CreateStoreBase.categoryValid'))
+              name: '_CreateStore.categoryValid'))
           .value;
-  Computed<Address?>? _$addressComputed;
+  Computed<Address> _$addressComputed;
 
   @override
-  Address? get address =>
-      (_$addressComputed ??= Computed<Address?>(() => super.address,
-              name: '_CreateStoreBase.address'))
-          .value;
-  Computed<num?>? _$priceComputed;
-
-  @override
-  num? get price => (_$priceComputed ??=
-          Computed<num?>(() => super.price, name: '_CreateStoreBase.price'))
+  Address get address => (_$addressComputed ??=
+          Computed<Address>(() => super.address, name: '_CreateStore.address'))
       .value;
-  Computed<bool>? _$formValidComputed;
+  Computed<num> _$priceComputed;
 
   @override
-  bool get formValid =>
-      (_$formValidComputed ??= Computed<bool>(() => super.formValid,
-              name: '_CreateStoreBase.formValid'))
-          .value;
-  Computed<VoidCallback?>? _$sendPressedComputed;
-
-  @override
-  VoidCallback? get sendPressed => (_$sendPressedComputed ??=
-          Computed<VoidCallback?>(() => super.sendPressed,
-              name: '_CreateStoreBase.sendPressed'))
+  num get price => (_$priceComputed ??=
+          Computed<num>(() => super.price, name: '_CreateStore.price'))
       .value;
-
-  late final _$imagesAtom =
-      Atom(name: '_CreateStoreBase.images', context: context);
+  Computed<bool> _$formValidComputed;
 
   @override
-  ObservableList<dynamic> get images {
-    _$imagesAtom.reportRead();
-    return super.images;
-  }
+  bool get formValid => (_$formValidComputed ??=
+          Computed<bool>(() => super.formValid, name: '_CreateStore.formValid'))
+      .value;
+  Computed<Function> _$sendPressedComputed;
 
   @override
-  set images(ObservableList<dynamic> value) {
-    _$imagesAtom.reportWrite(value, super.images, () {
-      super.images = value;
-    });
-  }
+  Function get sendPressed =>
+      (_$sendPressedComputed ??= Computed<Function>(() => super.sendPressed,
+              name: '_CreateStore.sendPressed'))
+          .value;
 
-  late final _$titleAtom =
-      Atom(name: '_CreateStoreBase.title', context: context);
+  final _$titleAtom = Atom(name: '_CreateStore.title');
 
   @override
   String get title {
@@ -97,8 +78,7 @@ mixin _$CreateStore on _CreateStoreBase, Store {
     });
   }
 
-  late final _$descriptionAtom =
-      Atom(name: '_CreateStoreBase.description', context: context);
+  final _$descriptionAtom = Atom(name: '_CreateStore.description');
 
   @override
   String get description {
@@ -113,24 +93,22 @@ mixin _$CreateStore on _CreateStoreBase, Store {
     });
   }
 
-  late final _$categoryAtom =
-      Atom(name: '_CreateStoreBase.category', context: context);
+  final _$categoryAtom = Atom(name: '_CreateStore.category');
 
   @override
-  Category? get category {
+  Category get category {
     _$categoryAtom.reportRead();
     return super.category;
   }
 
   @override
-  set category(Category? value) {
+  set category(Category value) {
     _$categoryAtom.reportWrite(value, super.category, () {
       super.category = value;
     });
   }
 
-  late final _$priceTextAtom =
-      Atom(name: '_CreateStoreBase.priceText', context: context);
+  final _$priceTextAtom = Atom(name: '_CreateStore.priceText');
 
   @override
   String get priceText {
@@ -145,8 +123,7 @@ mixin _$CreateStore on _CreateStoreBase, Store {
     });
   }
 
-  late final _$hidePhoneAtom =
-      Atom(name: '_CreateStoreBase.hidePhone', context: context);
+  final _$hidePhoneAtom = Atom(name: '_CreateStore.hidePhone');
 
   @override
   bool get hidePhone {
@@ -161,8 +138,7 @@ mixin _$CreateStore on _CreateStoreBase, Store {
     });
   }
 
-  late final _$showErrorsAtom =
-      Atom(name: '_CreateStoreBase.showErrors', context: context);
+  final _$showErrorsAtom = Atom(name: '_CreateStore.showErrors');
 
   @override
   bool get showErrors {
@@ -177,8 +153,7 @@ mixin _$CreateStore on _CreateStoreBase, Store {
     });
   }
 
-  late final _$loadingAtom =
-      Atom(name: '_CreateStoreBase.loading', context: context);
+  final _$loadingAtom = Atom(name: '_CreateStore.loading');
 
   @override
   bool get loading {
@@ -193,103 +168,114 @@ mixin _$CreateStore on _CreateStoreBase, Store {
     });
   }
 
-  late final _$errorAtom =
-      Atom(name: '_CreateStoreBase.error', context: context);
+  final _$errorAtom = Atom(name: '_CreateStore.error');
 
   @override
-  String? get error {
+  String get error {
     _$errorAtom.reportRead();
     return super.error;
   }
 
   @override
-  set error(String? value) {
+  set error(String value) {
     _$errorAtom.reportWrite(value, super.error, () {
       super.error = value;
     });
   }
 
-  late final _$_sendAsyncAction =
-      AsyncAction('_CreateStoreBase._send', context: context);
+  final _$savedAdAtom = Atom(name: '_CreateStore.savedAd');
 
   @override
-  Future _send() {
+  bool get savedAd {
+    _$savedAdAtom.reportRead();
+    return super.savedAd;
+  }
+
+  @override
+  set savedAd(bool value) {
+    _$savedAdAtom.reportWrite(value, super.savedAd, () {
+      super.savedAd = value;
+    });
+  }
+
+  final _$_sendAsyncAction = AsyncAction('_CreateStore._send');
+
+  @override
+  Future<void> _send() {
     return _$_sendAsyncAction.run(() => super._send());
   }
 
-  late final _$_CreateStoreBaseActionController =
-      ActionController(name: '_CreateStoreBase', context: context);
+  final _$_CreateStoreActionController = ActionController(name: '_CreateStore');
 
   @override
   void setTitle(String value) {
-    final _$actionInfo = _$_CreateStoreBaseActionController.startAction(
-        name: '_CreateStoreBase.setTitle');
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.setTitle');
     try {
       return super.setTitle(value);
     } finally {
-      _$_CreateStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void setDescription(String value) {
-    final _$actionInfo = _$_CreateStoreBaseActionController.startAction(
-        name: '_CreateStoreBase.setDescription');
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.setDescription');
     try {
       return super.setDescription(value);
     } finally {
-      _$_CreateStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void setCategory(Category value) {
-    final _$actionInfo = _$_CreateStoreBaseActionController.startAction(
-        name: '_CreateStoreBase.setCategory');
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.setCategory');
     try {
       return super.setCategory(value);
     } finally {
-      _$_CreateStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void setPrice(String value) {
-    final _$actionInfo = _$_CreateStoreBaseActionController.startAction(
-        name: '_CreateStoreBase.setPrice');
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.setPrice');
     try {
       return super.setPrice(value);
     } finally {
-      _$_CreateStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void setHidePhone(bool? value) {
-    final _$actionInfo = _$_CreateStoreBaseActionController.startAction(
-        name: '_CreateStoreBase.setHidePhone');
+  void setHidePhone(bool value) {
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.setHidePhone');
     try {
       return super.setHidePhone(value);
     } finally {
-      _$_CreateStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void invalidSendPressed() {
-    final _$actionInfo = _$_CreateStoreBaseActionController.startAction(
-        name: '_CreateStoreBase.invalidSendPressed');
+    final _$actionInfo = _$_CreateStoreActionController.startAction(
+        name: '_CreateStore.invalidSendPressed');
     try {
       return super.invalidSendPressed();
     } finally {
-      _$_CreateStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   String toString() {
     return '''
-images: ${images},
 title: ${title},
 description: ${description},
 category: ${category},
@@ -298,6 +284,7 @@ hidePhone: ${hidePhone},
 showErrors: ${showErrors},
 loading: ${loading},
 error: ${error},
+savedAd: ${savedAd},
 imagesValid: ${imagesValid},
 titleValid: ${titleValid},
 descriptionValid: ${descriptionValid},

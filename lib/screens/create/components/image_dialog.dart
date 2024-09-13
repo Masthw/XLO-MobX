@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:xlo_mobx/components/replace_flatbutton.dart';
 
 class ImageDialog extends StatelessWidget {
-  const ImageDialog({super.key, required this.image, required this.onDelete});
+  ImageDialog({@required this.image, @required this.onDelete});
 
   final dynamic image;
   final VoidCallback onDelete;
@@ -9,32 +10,17 @@ class ImageDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: <Widget>[
           Image.file(image),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
+          ReplaceFlatButton(
+              child: const Text('Excluir'),
+              textColor: Colors.red,
               onPressed: () {
                 Navigator.of(context).pop();
                 onDelete();
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                ),
-              ),
-              child: const Text(
-                'Excluir',
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ),
+              })
         ],
       ),
     );

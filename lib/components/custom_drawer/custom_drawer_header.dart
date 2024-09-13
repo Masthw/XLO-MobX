@@ -5,20 +5,21 @@ import 'package:xlo_mobx/stores/page_store.dart';
 import 'package:xlo_mobx/stores/user_manager_store.dart';
 
 class CustomDrawerHeader extends StatelessWidget {
-  CustomDrawerHeader({super.key});
 
   final UserManagerStore userManagerStore = GetIt.I<UserManagerStore>();
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: (){
         Navigator.of(context).pop();
-        if (userManagerStore.isLoggedIn) {
+
+        if(userManagerStore.isLoggedIn){
           GetIt.I<PageStore>().setPage(4);
         } else {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => LoginScreen()));
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => LoginScreen())
+          );
         }
       },
       child: Container(
@@ -27,14 +28,8 @@ class CustomDrawerHeader extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           children: [
-            const Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 35,
-            ),
-            const SizedBox(
-              width: 20,
-            ),
+            Icon(Icons.person, color: Colors.white, size: 35,),
+            const SizedBox(width: 20,),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,22 +37,24 @@ class CustomDrawerHeader extends StatelessWidget {
                 children: [
                   Text(
                     userManagerStore.isLoggedIn
-                        ? userManagerStore.user!.name
-                        : 'Acesse sua conta agora!',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500),
+                      ? userManagerStore.user.name
+                      : 'Acesse sua conta agora!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   Text(
                     userManagerStore.isLoggedIn
-                        ? userManagerStore.user!.email
-                        : 'Clique aqui',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400),
-                  ),
+                      ? userManagerStore.user.email
+                      : 'Clique aqui',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    )
+                  )
                 ],
               ),
             )

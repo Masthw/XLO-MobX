@@ -6,44 +6,69 @@ part of 'user_manager_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$UserManagerStore on _UserManagerStoreBase, Store {
-  Computed<bool>? _$isLoggedInComputed;
+mixin _$UserManagerStore on _UserManagerStore, Store {
+  Computed<bool> _$isLoggedInComputed;
 
   @override
   bool get isLoggedIn =>
       (_$isLoggedInComputed ??= Computed<bool>(() => super.isLoggedIn,
-              name: '_UserManagerStoreBase.isLoggedIn'))
+              name: '_UserManagerStore.isLoggedIn'))
           .value;
 
-  late final _$userAtom =
-      Atom(name: '_UserManagerStoreBase.user', context: context);
+  final _$userAtom = Atom(name: '_UserManagerStore.user');
 
   @override
-  User? get user {
+  User get user {
     _$userAtom.reportRead();
     return super.user;
   }
 
   @override
-  set user(User? value) {
+  set user(User value) {
     _$userAtom.reportWrite(value, super.user, () {
       super.user = value;
     });
   }
 
-  late final _$_UserManagerStoreBaseActionController =
-      ActionController(name: '_UserManagerStoreBase', context: context);
+  final _$readyToFetchAdsAtom = Atom(name: '_UserManagerStore.readyToFetchAds');
+
+  @override
+  bool get readyToFetchAds {
+    _$readyToFetchAdsAtom.reportRead();
+    return super.readyToFetchAds;
+  }
+
+  @override
+  set readyToFetchAds(bool value) {
+    _$readyToFetchAdsAtom.reportWrite(value, super.readyToFetchAds, () {
+      super.readyToFetchAds = value;
+    });
+  }
+
+  final _$_UserManagerStoreActionController =
+      ActionController(name: '_UserManagerStore');
+
+  @override
+  dynamic setReadyToFetchAds(bool value) {
+    final _$actionInfo = _$_UserManagerStoreActionController.startAction(
+        name: '_UserManagerStore.setReadyToFetchAds');
+    try {
+      return super.setReadyToFetchAds(value);
+    } finally {
+      _$_UserManagerStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setUser(User value) {
-    final _$actionInfo = _$_UserManagerStoreBaseActionController.startAction(
-        name: '_UserManagerStoreBase.setUser');
+    final _$actionInfo = _$_UserManagerStoreActionController.startAction(
+        name: '_UserManagerStore.setUser');
     try {
       return super.setUser(value);
     } finally {
-      _$_UserManagerStoreBaseActionController.endAction(_$actionInfo);
+      _$_UserManagerStoreActionController.endAction(_$actionInfo);
     }
   }
 
@@ -51,6 +76,7 @@ mixin _$UserManagerStore on _UserManagerStoreBase, Store {
   String toString() {
     return '''
 user: ${user},
+readyToFetchAds: ${readyToFetchAds},
 isLoggedIn: ${isLoggedIn}
     ''';
   }
